@@ -11,8 +11,8 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name="Orders")
-@NamedQuery(name="Order.findAll", query="SELECT o FROM Order o")
+@Table(name = "Orders")
+@NamedQuery(name = "Order.findAll", query = "SELECT o FROM Order o")
 public class Order implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -25,7 +25,7 @@ public class Order implements Serializable {
 	private String email;
 
 	private String fullName;
-	
+
 	@Temporal(TemporalType.DATE)
 	private Date orderDate;
 
@@ -33,13 +33,13 @@ public class Order implements Serializable {
 
 	private double totalPrice;
 
-	//bi-directional many-to-one association to OrderDetail
-	@OneToMany(mappedBy="order",fetch=FetchType.EAGER)
+	// bi-directional many-to-one association to OrderDetail
+	@OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
 	private List<OrderDetail> orderDetails;
 
-	//bi-directional many-to-one association to Payment
+	// bi-directional many-to-one association to Payment
 	@ManyToOne
-	@JoinColumn(name="paymentID")
+	@JoinColumn(name = "paymentID")
 	private Payment payment;
 
 	public Order() {

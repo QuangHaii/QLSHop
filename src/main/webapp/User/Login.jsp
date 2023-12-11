@@ -40,7 +40,7 @@
                 </div>
                 <div>
                     <p>
-                        <a href="">Forgot your password?</a>
+                        <a href="/QLShop/User/ForgotPassword">Forgot your password?</a>
                     </p>
                     <p>
                         <a href="/QLShop/User/Register">Register as a new user</a>

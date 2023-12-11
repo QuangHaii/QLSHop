@@ -4,7 +4,6 @@ import java.util.List;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
-import model.Order;
 import model.OrderDetail;
 import utils.JpaUtils;
 
@@ -24,7 +23,7 @@ public class OrderDetailDAO {
 		}
 		return 1;
 	}
-	
+
 	public int update(OrderDetail orderDetail) {
 		EntityManager em = JpaUtils.getEntityManager();
 		EntityTransaction transaction = em.getTransaction();
@@ -85,7 +84,7 @@ public class OrderDetailDAO {
 		}
 		return list;
 	}
-	
+
 	public OrderDetail getOrderDetail(int id) {
 		EntityManager em = JpaUtils.getEntityManager();
 		EntityTransaction transaction = em.getTransaction();
@@ -105,6 +104,5 @@ public class OrderDetailDAO {
 		}
 		return orderDetail;
 	}
-
 
 }

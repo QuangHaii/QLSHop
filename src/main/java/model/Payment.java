@@ -4,13 +4,12 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import java.util.List;
 
-
 /**
  * The persistent class for the Payment database table.
  * 
  */
 @Entity
-@NamedQuery(name="Payment.findAll", query="SELECT p FROM Payment p")
+@NamedQuery(name = "Payment.findAll", query = "SELECT p FROM Payment p")
 public class Payment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -20,7 +19,7 @@ public class Payment implements Serializable {
 
 	private int cardNumber;
 
-	@Column(name="CVV")
+	@Column(name = "CVV")
 	private int cvv;
 
 	private int expirationMonth;
@@ -33,13 +32,13 @@ public class Payment implements Serializable {
 
 	private int userID;
 
-	//bi-directional many-to-one association to Order
-	@OneToMany(mappedBy="payment")
+	// bi-directional many-to-one association to Order
+	@OneToMany(mappedBy = "payment")
 	private List<Order> orders;
 
-	//bi-directional one-to-one association to User
+	// bi-directional one-to-one association to User
 	@OneToOne
-	@JoinColumn(name="paymentID")
+	@JoinColumn(name = "paymentID")
 	private User user;
 
 	public Payment() {

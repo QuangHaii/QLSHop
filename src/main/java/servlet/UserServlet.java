@@ -11,6 +11,7 @@ import model.PaginatedList;
 import model.Product;
 import model.User;
 import utils.CartUtils;
+import utils.EmailUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,7 +28,7 @@ import dataAccess.UserDAO;
  */
 @WebServlet({ "/User/Register", "/User/Check", "/User/Login", "/User/Shopping", "/User/AddToCart", "/User/ViewCart",
 		"/User/Logout", "/User/Profile", "/User/ChangePassword", "/User/Index", "/User/Edit", "/User/Delete",
-		"/User/DeleteItem", "/User/Admin", "/User/OrderHistory" })
+		"/User/DeleteItem", "/User/Admin", "/User/OrderHistory", "/User/ForgotPassword", "/User/ValidateOtp", "/User/NewPassword" })
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private UserDAO dao = new UserDAO();
@@ -70,14 +71,15 @@ public class UserServlet extends HttpServlet {
 			int pageSize = 8;
 			int totalItem = pDao.findAll().size();
 			PaginatedList page = new PaginatedList(pageIndex, pageSize, totalItem);
-			
+
 			session = request.getSession(true);
 			String searchString = (String) session.getAttribute("Search");
 			searchString = request.getParameter("searchString");
 			session.setAttribute("Search", searchString);
 			String sortString = request.getParameter("sortOrder");
 			String cateString = request.getParameter("cateSort");
-			List<Product> listItem = pDao.getPageProducts(pageSize * (pageIndex - 1),pageSize, sortString, searchString, cateString);
+			List<Product> listItem = pDao.getPageProducts(pageSize * (pageIndex - 1), pageSize, sortString,
+					searchString, cateString);
 			request.setAttribute("cateString", cateString);
 			request.setAttribute("sortString", sortString);
 			request.setAttribute("pageIndex", pageIndex);
@@ -124,7 +126,7 @@ public class UserServlet extends HttpServlet {
 			request.setAttribute("listUser", listUser);
 			request.getRequestDispatcher("/Admin/Index.jsp").forward(request, response);
 		}
-		if(uri.contains("/User/OrderHistory")) {
+		if (uri.contains("/User/OrderHistory")) {
 			session = request.getSession(true);
 			User user = (User) session.getAttribute("User");
 			request.setAttribute("listOrders", orderDAO.getOrderByUserID(user.getUserID()));
@@ -144,15 +146,26 @@ public class UserServlet extends HttpServlet {
 			LocalDate localDate = LocalDate.now();
 			System.out.println(localDate.getMonthValue());
 			System.out.println(localDate.getYear());
-			request.setAttribute("tongDonHang", orderDAO.tongDonHang(localDate.getMonthValue(),localDate.getYear()));
-			request.setAttribute("percentDonHang", orderDAO.percentDonHang(localDate.getMonthValue(),localDate.getYear()));
-			request.setAttribute("doanhthu", orderDAO.doanhThu(localDate.getMonthValue(),localDate.getYear()));
-			request.setAttribute("percentDoanhThu", orderDAO.percentDoanhThu(localDate.getMonthValue(),localDate.getYear()));
+			request.setAttribute("tongDonHang", orderDAO.tongDonHang(localDate.getMonthValue(), localDate.getYear()));
+			request.setAttribute("percentDonHang",
+					orderDAO.percentDonHang(localDate.getMonthValue(), localDate.getYear()));
+			request.setAttribute("doanhthu", orderDAO.doanhThu(localDate.getMonthValue(), localDate.getYear()));
+			request.setAttribute("percentDoanhThu",
+					orderDAO.percentDoanhThu(localDate.getMonthValue(), localDate.getYear()));
 			request.setAttribute("listProduct", pDao.top10Product());
 			request.setAttribute("listUser", dao.top5Customer());
 			request.setAttribute("listOrders", orderDAO.last5Orders());
 			request.getRequestDispatcher("/Admin/Dashboard.jsp").forward(request, response);
 		}
+		
+		if(uri.contains("/User/ForgotPassword")) {
+			request.getRequestDispatcher("/Password/forgotPassword.jsp").forward(request, response);
+		}
+		if(uri.contains("/User/NewPassword")) {
+			request.getRequestDispatcher("/Password/newPassword.jsp").forward(request, response);
+
+		}
+		
 	}
 
 	/**
@@ -255,6 +268,52 @@ public class UserServlet extends HttpServlet {
 		if (uri.contains("/User/Delete")) {
 			dao.delete(Integer.parseInt(request.getParameter("userID")));
 			response.sendRedirect("/QLShop/User/Index");
+		}
+		if(uri.contains("/User/ForgotPassword")) {
+			session = request.getSession(true);
+			User user = dao.getUser(request.getParameter("username"));
+			session.setAttribute("Username", request.getParameter("username"));
+			EmailUtils mail = new EmailUtils();
+			int OTPvalue = mail.sendEmail(user.getEmail());
+			session.setAttribute("OTP", OTPvalue);
+			request.getRequestDispatcher("/Password/EnterOtp.jsp").forward(request, response);
+		}
+		if(uri.contains("/User/ValidateOtp")) {
+			session = request.getSession(true);
+			int OTPvalue = (int) session.getAttribute("OTP");
+			int OTP = Integer.parseInt(request.getParameter("otp"));
+			if(OTPvalue != OTP) {
+				request.setAttribute("message", "Incorrect OTP");
+				request.getRequestDispatcher("/Password/EnterOtp.jsp").forward(request,response);
+			}
+			else {
+				request.getRequestDispatcher("/Password/newPassword.jsp").forward(request, response);
+			}
+		}
+		if(uri.contains("/User/NewPassword")) {
+			PrintWriter out = response.getWriter();
+			String password = request.getParameter("password");
+			String confPassword = request.getParameter("confPassword");
+			System.out.println(password);
+			System.out.println(confPassword);
+			System.out.println(password.equals(confPassword));
+
+			if(!password.equals(confPassword)) {
+				out.println("<script type=\"text/javascript\">");
+				out.println("alert('Check password again!!');");
+				out.println("location='/QLShop/User/NewPassword';");
+				out.println("</script>");
+			}
+			else {
+				User user = dao.getUser((String) session.getAttribute("Username"));
+				user.setPassword(password);
+				dao.update(user);
+				out.println("<script type=\"text/javascript\">");
+				out.println("alert('Change password success!!');");
+				out.println("location='/QLShop/User/Login';");
+				out.println("</script>");
+			}
+			out.close();
 		}
 	}
 

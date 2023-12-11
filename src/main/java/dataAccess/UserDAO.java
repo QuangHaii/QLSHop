@@ -23,7 +23,7 @@ public class UserDAO {
 		}
 		return 1;
 	}
-	
+
 	public int update(User user) {
 		EntityManager em = JpaUtils.getEntityManager();
 		EntityTransaction transaction = em.getTransaction();
@@ -86,7 +86,7 @@ public class UserDAO {
 		}
 		return list;
 	}
-	
+
 	public User getUser(int id) {
 		EntityManager em = JpaUtils.getEntityManager();
 		User user = null;
@@ -102,7 +102,7 @@ public class UserDAO {
 		}
 		return user;
 	}
-	
+
 	public boolean checkAvailability(String username) {
 		EntityManager em = JpaUtils.getEntityManager();
 		try {
@@ -119,6 +119,22 @@ public class UserDAO {
 		}
 	}
 	
+	public User getUser(String username) {
+		EntityManager em = JpaUtils.getEntityManager();
+		User user = null;
+		try {
+			String jpql = "SELECT o FROM User o WHERE o.username=:name";
+			TypedQuery<User> query = em.createQuery(jpql, User.class);
+			query.setParameter("name", username);
+			user = query.getSingleResult();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			em.close();
+		}
+		return user;
+	}
+
 	public User loginUser(String username, String password) {
 		EntityManager em = JpaUtils.getEntityManager();
 		User user = null;
@@ -135,19 +151,14 @@ public class UserDAO {
 		}
 		return user;
 	}
-	
+
 	public List<Object[]> top5Customer() {
 		EntityManager em = JpaUtils.getEntityManager();
-		String jpqlQuery = "SELECT u.userID,u.username,SUM(o.totalPrice) " +
-	                "FROM User u, Payment p, Order o " +
-	                "WHERE u.userID = p.userID AND p.paymentID = o.payment.paymentID " +
-	                "GROUP BY u.username,u.userID " +
-	                "ORDER BY SUM(o.totalPrice) DESC";
-		 jakarta.persistence.Query query = em.createQuery(jpqlQuery);
-		 List<Object[]> temp= (List<Object[]>) query
-				 .setFirstResult(0)
-				 .setMaxResults(5)
-				 .getResultList();	
+		String jpqlQuery = "SELECT u.userID,u.username,SUM(o.totalPrice) " + "FROM User u, Payment p, Order o "
+				+ "WHERE u.userID = p.userID AND p.paymentID = o.payment.paymentID " + "GROUP BY u.username,u.userID "
+				+ "ORDER BY SUM(o.totalPrice) DESC";
+		jakarta.persistence.Query query = em.createQuery(jpqlQuery);
+		List<Object[]> temp = (List<Object[]>) query.setFirstResult(0).setMaxResults(5).getResultList();
 		em.close();
 		return temp;
 	}

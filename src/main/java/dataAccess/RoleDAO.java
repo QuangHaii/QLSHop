@@ -23,7 +23,7 @@ public class RoleDAO {
 		}
 		return 1;
 	}
-	
+
 	public int update(Role role) {
 		EntityManager em = JpaUtils.getEntityManager();
 		EntityTransaction transaction = em.getTransaction();
@@ -82,7 +82,7 @@ public class RoleDAO {
 		}
 		return list;
 	}
-	
+
 	public Role getRole(int id) {
 		EntityManager em = JpaUtils.getEntityManager();
 		Role role = null;

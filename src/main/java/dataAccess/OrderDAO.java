@@ -24,7 +24,7 @@ public class OrderDAO {
 		}
 		return 1;
 	}
-	
+
 	public int update(Order order) {
 		EntityManager em = JpaUtils.getEntityManager();
 		EntityTransaction transaction = em.getTransaction();
@@ -89,7 +89,7 @@ public class OrderDAO {
 		}
 		return list;
 	}
-	
+
 	public Order getOrder(int id) {
 		EntityManager em = JpaUtils.getEntityManager();
 		EntityTransaction transaction = em.getTransaction();
@@ -109,7 +109,7 @@ public class OrderDAO {
 		}
 		return order;
 	}
-	
+
 	public Order getOrderByPayment(Payment payment) {
 		EntityManager em = JpaUtils.getEntityManager();
 		EntityTransaction transaction = em.getTransaction();
@@ -129,7 +129,7 @@ public class OrderDAO {
 		}
 		return order;
 	}
-	
+
 	public List<Order> getOrderByUserID(int userID) {
 		EntityManager em = JpaUtils.getEntityManager();
 		String jpql = "SELECT x FROM Order x WHERE x.payment.userID =:id";
@@ -139,65 +139,62 @@ public class OrderDAO {
 		em.close();
 		return orders;
 	}
-	
+
 	public List<Order> last5Orders() {
 		EntityManager em = JpaUtils.getEntityManager();
 		String jpql = "SELECT x FROM Order x order by x.orderID desc";
 		TypedQuery<Order> query = em.createQuery(jpql, Order.class);
-		List<Order> orders = query.setFirstResult(0)
-				.setMaxResults(5)
-				.getResultList();
+		List<Order> orders = query.setFirstResult(0).setMaxResults(5).getResultList();
 		em.close();
 		return orders;
 	}
-	
-	public double doanhThu(int month,int year) {
+
+	public double doanhThu(int month, int year) {
 		EntityManager em = JpaUtils.getEntityManager();
-		String jpqlQuery = "select SUM(o.totalPrice) " +
-	                "from Order o " +
-	                "where MONTH(o.orderDate) ="+month+" and YEAR(o.orderDate) ="+year;
-		 TypedQuery<Double> query = em.createQuery(jpqlQuery,Double.class);
-		 double doanhthu = (double) query.getSingleResult();
+		String jpqlQuery = "select SUM(o.totalPrice) " + "from Order o " + "where MONTH(o.orderDate) =" + month
+				+ " and YEAR(o.orderDate) =" + year;
+		TypedQuery<Double> query = em.createQuery(jpqlQuery, Double.class);
+		double doanhthu = (double) query.getSingleResult();
 		em.close();
 		return doanhthu;
 	}
-	
-	public double percentDoanhThu(int month,int year) {
+
+	public double percentDoanhThu(int month, int year) {
 		int prevMonth = month - 1;
 		int prevYear = year;
-		if(month == 1) {
+		if (month == 1) {
 			prevMonth = 12;
-			prevYear = year -1;
+			prevYear = year - 1;
 		}
-		double percent = (doanhThu(month,year)-doanhThu(prevMonth,prevYear))/doanhThu(prevMonth, prevYear);
-		
+		double percent = (doanhThu(month, year) - doanhThu(prevMonth, prevYear)) / doanhThu(prevMonth, prevYear);
+
 		return percent;
 	}
-	
-	public long tongDonHang(int month,int year) {
+
+	public long tongDonHang(int month, int year) {
 		EntityManager em = JpaUtils.getEntityManager();
-		String jpqlQuery = "select COUNT(o.orderID) " +
-	                "from Order o " +
-	                "where MONTH(o.orderDate) ="+month+" and YEAR(o.orderDate) ="+year;
-		 jakarta.persistence.Query query = em.createQuery(jpqlQuery);
-		 long donhang = (long) query.getSingleResult();
+		String jpqlQuery = "select COUNT(o.orderID) " + "from Order o " + "where MONTH(o.orderDate) =" + month
+				+ " and YEAR(o.orderDate) =" + year;
+		jakarta.persistence.Query query = em.createQuery(jpqlQuery);
+		long donhang = (long) query.getSingleResult();
 		em.close();
 		return donhang;
 	}
-	
-	public double percentDonHang(int month,int year) {
+
+	public double percentDonHang(int month, int year) {
 		int prevMonth = month - 1;
 		int prevYear = year;
-		if(month == 1) {
+		if (month == 1) {
 			prevMonth = 12;
-			prevYear = year -1;
+			prevYear = year - 1;
 		}
-		double percent = (tongDonHang(month,year)-tongDonHang(prevMonth,prevYear))/tongDonHang(prevMonth, prevYear);
-		
+		double percent = (tongDonHang(month, year) - tongDonHang(prevMonth, prevYear))
+				/ tongDonHang(prevMonth, prevYear);
+
 		return percent;
 	}
-	
-	public List<Order> getPageOrders(int first,int pageSize) {
+
+	public List<Order> getPageOrders(int first, int pageSize) {
 		EntityManager em = JpaUtils.getEntityManager();
 		EntityTransaction transaction = em.getTransaction();
 		List<Order> list = null;
@@ -208,9 +205,7 @@ public class OrderDAO {
 			// Tạo đối tượng truy vấn
 			TypedQuery<Order> query = em.createQuery(jpql, Order.class);
 			// Truy vấn
-			list = query.setFirstResult(first)
-					.setMaxResults(pageSize)
-					.getResultList();
+			list = query.setFirstResult(first).setMaxResults(pageSize).getResultList();
 			transaction.commit();
 			// Hiển thị kết quả truy vấn
 		} catch (Exception e) {

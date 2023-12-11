@@ -3,13 +3,12 @@ package model;
 import java.io.Serializable;
 import jakarta.persistence.*;
 
-
 /**
  * The persistent class for the OrderDetail database table.
  * 
  */
 @Entity
-@NamedQuery(name="OrderDetail.findAll", query="SELECT o FROM OrderDetail o")
+@NamedQuery(name = "OrderDetail.findAll", query = "SELECT o FROM OrderDetail o")
 public class OrderDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -19,14 +18,14 @@ public class OrderDetail implements Serializable {
 
 	private int quantity;
 
-	//bi-directional many-to-one association to Order
+	// bi-directional many-to-one association to Order
 	@ManyToOne
-	@JoinColumn(name="orderID")
+	@JoinColumn(name = "orderID")
 	private Order order;
 
-	//bi-directional many-to-one association to Product
+	// bi-directional many-to-one association to Product
 	@ManyToOne
-	@JoinColumn(name="productID")
+	@JoinColumn(name = "productID")
 	private Product product;
 
 	public OrderDetail() {

@@ -3,14 +3,13 @@ package model;
 import java.io.Serializable;
 import jakarta.persistence.*;
 
-
 /**
  * The persistent class for the Users database table.
  * 
  */
 @Entity
-@Table(name="Users")
-@NamedQuery(name="User.findAll", query="SELECT u FROM User u")
+@Table(name = "Users")
+@NamedQuery(name = "User.findAll", query = "SELECT u FROM User u")
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -32,13 +31,13 @@ public class User implements Serializable {
 
 	private String username;
 
-	//bi-directional one-to-one association to Payment
-	@OneToOne(mappedBy="user")
+	// bi-directional one-to-one association to Payment
+	@OneToOne(mappedBy = "user")
 	private Payment payment;
 
-	//bi-directional many-to-one association to Role
+	// bi-directional many-to-one association to Role
 	@ManyToOne
-	@JoinColumn(name="roleID")
+	@JoinColumn(name = "roleID")
 	private Role role;
 
 	public User() {

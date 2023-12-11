@@ -9,8 +9,8 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name="Products")
-@NamedQuery(name="Product.findAll", query="SELECT p FROM Product p")
+@Table(name = "Products")
+@NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p")
 public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -27,11 +27,11 @@ public class Product implements Serializable {
 	private double price;
 
 	private String productName;
-	
+
 	private int discountPercentage;
 
-	//bi-directional many-to-one association to OrderDetail
-	@OneToMany(mappedBy="product")
+	// bi-directional many-to-one association to OrderDetail
+	@OneToMany(mappedBy = "product")
 	private List<OrderDetail> orderDetails;
 
 	public Product() {
@@ -84,7 +84,7 @@ public class Product implements Serializable {
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
-	
+
 	public int getDiscountPercentage() {
 		return discountPercentage;
 	}

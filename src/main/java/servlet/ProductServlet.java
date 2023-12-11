@@ -30,7 +30,7 @@ public class ProductServlet extends HttpServlet {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -51,24 +51,24 @@ public class ProductServlet extends HttpServlet {
 			request.setAttribute("startPage", page.getStartPage());
 			request.setAttribute("endPage", page.getEndPage());
 			request.setAttribute("totalPages", page.getTotalPages());
-			List<Product> listProducts = dao.getPageProducts(pageSize*(pageIndex -1),pageSize,null,null,null);
+			List<Product> listProducts = dao.getPageProducts(pageSize * (pageIndex - 1), pageSize, null, null, null);
 			request.setAttribute("listProducts", listProducts);
 			request.getRequestDispatcher("/Product/Index.jsp").forward(request, response);
-		
+
 		} else if (uri.contains("/Product/Create")) {
 			request.setAttribute("list", dao.getBrandList());
 			request.setAttribute("cateList", dao.getCategoryList());
 			request.getRequestDispatcher("/Product/Create.jsp").forward(request, response);
-		
+
 		} else if (uri.contains("/Product/Edit")) {
 			int id = Integer.parseInt(request.getParameter("id"));
 			Product product = dao.getProduct(id);
-			request.setAttribute("product",product);
+			request.setAttribute("product", product);
 			request.setAttribute("list", dao.getBrandList());
 			request.setAttribute("cateList", dao.getCategoryList());
 			request.getRequestDispatcher("/Product/Edit.jsp").forward(request, response);
-		
-		} else if  (uri.contains("/Product/Delete")) {
+
+		} else if (uri.contains("/Product/Delete")) {
 			int id = Integer.parseInt(request.getParameter("id"));
 			Product product = dao.getProduct(id);
 			request.setAttribute("product", product);
@@ -106,9 +106,9 @@ public class ProductServlet extends HttpServlet {
 			product.setDiscountPercentage(Integer.parseInt(request.getParameter("discount")));
 			dao.update(product);
 			response.sendRedirect("/QLShop/Product/Index");
-			
+
 		} else if (uri.contains("/Product/Delete")) {
-			dao.deleteImage(request,request.getParameter("imgURL"));
+			dao.deleteImage(request, request.getParameter("imgURL"));
 			dao.delete(Integer.parseInt(request.getParameter("productID")));
 			response.sendRedirect("/QLShop/Product/Index");
 		}

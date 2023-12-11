@@ -162,7 +162,8 @@ public class ProductDAO {
 		return cateList;
 	}
 
-	public List<Product> getPageProducts(int first,int pageSize, String sortString, String searchString, String cateString) {
+	public List<Product> getPageProducts(int first, int pageSize, String sortString, String searchString,
+			String cateString) {
 		String jpql = "SELECT a FROM Product a where a.productName like:search and a.category like:cate ";
 		if (sortString != null) {
 			if (sortString.contains("a_to_z")) {
@@ -193,14 +194,11 @@ public class ProductDAO {
 
 	public List<Object[]> top10Product() {
 		EntityManager em = JpaUtils.getEntityManager();
-		String jpqlQuery = "SELECT p.productID,p.productName,p.brand,p.category,SUM(d.quantity),SUM(d.quantity)*p.price " +
-	                "FROM Product p, OrderDetail d " +
-	                "WHERE p.productID = d.product.productID " +
-	                "GROUP BY p.productID,p.productName,p.brand,p.category,p.price " +
-	                "ORDER BY SUM(d.quantity) desc ";
-		 jakarta.persistence.Query query = em.createQuery(jpqlQuery);
-		 List<Object[]> temp= (List<Object[]>) query
-				 .setFirstResult(0).setMaxResults(10).getResultList();
+		String jpqlQuery = "SELECT p.productID,p.productName,p.brand,p.category,SUM(d.quantity),SUM(d.quantity)*p.price "
+				+ "FROM Product p, OrderDetail d " + "WHERE p.productID = d.product.productID "
+				+ "GROUP BY p.productID,p.productName,p.brand,p.category,p.price " + "ORDER BY SUM(d.quantity) desc ";
+		jakarta.persistence.Query query = em.createQuery(jpqlQuery);
+		List<Object[]> temp = (List<Object[]>) query.setFirstResult(0).setMaxResults(10).getResultList();
 
 		em.close();
 		return temp;

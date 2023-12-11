@@ -34,7 +34,7 @@ public class PaymentServlet extends HttpServlet {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -42,7 +42,7 @@ public class PaymentServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String uri = request.getRequestURI();
-		
+
 		if (uri.contains("/Payment/Index")) {
 			int pageIndex = 1;
 			if (request.getParameter("pageIndex") != null) {
@@ -57,7 +57,7 @@ public class PaymentServlet extends HttpServlet {
 			request.setAttribute("totalPages", page.getTotalPages());
 			request.setAttribute("listPayments", paymentDAO.getPagePayments(pageSize * (pageIndex - 1), pageSize));
 			request.getRequestDispatcher("/Payment/Index.jsp").forward(request, response);
-		
+
 		} else if (uri.contains("/Payment/Create")) {
 			session = request.getSession(true);
 			User user = (User) session.getAttribute("User");
@@ -65,23 +65,23 @@ public class PaymentServlet extends HttpServlet {
 			request.setAttribute("listMethod", paymentDAO.getPaymentList());
 			request.setAttribute("user", user);
 			request.getRequestDispatcher("/Payment/Create.jsp").forward(request, response);
-		
+
 		} else if (uri.contains("/Payment/Detail")) {
 			int id = Integer.parseInt(request.getParameter("id"));
 			Payment payment = paymentDAO.getPayment(id);
 			Order order = orderDAO.getOrderByPayment(payment);
 			User user = userDAO.getUser(payment.getUserID());
-			
+
 			request.setAttribute("orderDetailList", order.getOrderDetails());
 			request.setAttribute("listMethod", paymentDAO.getPaymentList());
-			request.setAttribute("payment",payment);
-			request.setAttribute("customer",user);
+			request.setAttribute("payment", payment);
+			request.setAttribute("customer", user);
 			request.setAttribute("totalPrice", order.getTotalPrice());
 			request.getRequestDispatcher("/Payment/Detail.jsp").forward(request, response);
 		} else if (uri.contains("/Payment/AdminDetail")) {
 			int id = Integer.parseInt(request.getParameter("id"));
 			Payment payment = paymentDAO.getPayment(id);
-			request.setAttribute("payment",payment);
+			request.setAttribute("payment", payment);
 			request.setAttribute("listMethod", paymentDAO.getPaymentList());
 			request.getRequestDispatcher("/Payment/DetailAdmin.jsp").forward(request, response);
 
@@ -98,9 +98,9 @@ public class PaymentServlet extends HttpServlet {
 		String uri = request.getRequestURI();
 		if (uri.contains("/Payment/Create")) {
 			session = request.getSession(true);
-			//Add Payment
+			// Add Payment
 			User user = (User) session.getAttribute("User");
-			
+
 			Payment payment = new Payment();
 			payment.setMethod(request.getParameter("method"));
 			payment.setCardNumber(Integer.parseInt(request.getParameter("cardNumber")));
@@ -110,7 +110,7 @@ public class PaymentServlet extends HttpServlet {
 			payment.setExpirationYear(Integer.parseInt(request.getParameter("expirationYear")));
 			payment.setUserID(user.getUserID());
 			paymentDAO.insert(payment);
-			//Add Order
+			// Add Order
 			Order order = new Order();
 			order.setFullName(request.getParameter("fullname"));
 			order.setEmail(request.getParameter("email"));
@@ -120,18 +120,18 @@ public class PaymentServlet extends HttpServlet {
 			order.setOrderDate(new Date(System.currentTimeMillis()));
 			order.setPayment(payment);
 			orderDAO.insert(order);
-			//Add Order Detail
+			// Add Order Detail
 			CartUtils cart = (CartUtils) session.getAttribute("Cart");
-			for (Integer item: cart.getKeyList()) {
+			for (Integer item : cart.getKeyList()) {
 				OrderDetail orderDetail = new OrderDetail();
 				orderDetail.setOrder(order);
-				orderDetail.setProduct(((CartItem)cart.get(item)).getSanpham());
-				orderDetail.setQuantity(((CartItem)cart.get(item)).getQuantity());
+				orderDetail.setProduct(((CartItem) cart.get(item)).getSanpham());
+				orderDetail.setQuantity(((CartItem) cart.get(item)).getQuantity());
 				orderDetailDAO.insert(orderDetail);
 			}
 			cart.clear();
 			session.setAttribute("Cart", cart);
-			response.sendRedirect("/QLShop/Payment/Detail?id="+payment.getPaymentID());
+			response.sendRedirect("/QLShop/Payment/Detail?id=" + payment.getPaymentID());
 		}
 	}
 

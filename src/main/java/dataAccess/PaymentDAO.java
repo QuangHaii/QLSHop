@@ -24,7 +24,7 @@ public class PaymentDAO {
 		}
 		return 1;
 	}
-	
+
 	public int update(Payment payment) {
 		EntityManager em = JpaUtils.getEntityManager();
 		EntityTransaction transaction = em.getTransaction();
@@ -89,7 +89,7 @@ public class PaymentDAO {
 		}
 		return list;
 	}
-	
+
 	public Payment getPayment(int id) {
 		EntityManager em = JpaUtils.getEntityManager();
 		EntityTransaction transaction = em.getTransaction();
@@ -109,16 +109,16 @@ public class PaymentDAO {
 		}
 		return payment;
 	}
-	
-	public List<String> getPaymentList(){
+
+	public List<String> getPaymentList() {
 		List<String> paymentList = new ArrayList<String>();
 		paymentList.add("Credit");
 		paymentList.add("Debit");
 		paymentList.add("Visa");
 		return paymentList;
 	}
-	
-	public List<Payment> getPagePayments(int first,int pageSize){
+
+	public List<Payment> getPagePayments(int first, int pageSize) {
 		EntityManager em = JpaUtils.getEntityManager();
 		EntityTransaction transaction = em.getTransaction();
 		List<Payment> list = null;
@@ -129,9 +129,7 @@ public class PaymentDAO {
 			// Tạo đối tượng truy vấn
 			TypedQuery<Payment> query = em.createQuery(jpql, Payment.class);
 			// Truy vấn
-			list = query.setFirstResult(first)
-					.setMaxResults(pageSize)
-					.getResultList();
+			list = query.setFirstResult(first).setMaxResults(pageSize).getResultList();
 			transaction.commit();
 			// Hiển thị kết quả truy vấn
 		} catch (Exception e) {
