@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Order;
 import model.OrderDetail;
+import model.PaginatedList;
 import model.User;
 
 import java.io.IOException;
@@ -39,7 +40,18 @@ public class OrderServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String uri = request.getRequestURI();
 		if (uri.contains("/Order/Index")) {
-			request.setAttribute("listOrders", orderDAO.findAll());
+			int pageIndex = 1;
+			if (request.getParameter("pageIndex") != null) {
+				pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
+			}
+			int pageSize = 10;
+			int totalItem = orderDAO.findAll().size();
+			PaginatedList page = new PaginatedList(pageIndex, pageSize, totalItem);
+			request.setAttribute("pageIndex", pageIndex);
+			request.setAttribute("startPage", page.getStartPage());
+			request.setAttribute("endPage", page.getEndPage());
+			request.setAttribute("totalPages", page.getTotalPages());
+			request.setAttribute("listOrders", orderDAO.getPageOrders(pageSize*(pageIndex-1),pageSize));
 			request.getRequestDispatcher("/Order/Index.jsp").forward(request, response);
 		} else if (uri.contains("/Order/Detail")) {
 			int id = Integer.parseInt(request.getParameter("id"));

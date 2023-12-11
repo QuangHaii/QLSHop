@@ -14,7 +14,7 @@ public class PaginatedList {
 		super();
 		this.pageIndex = pageIndex;
 		this.pageSize = pageSize;
-		this.totalPages = (int) Math.ceil(totalItem/pageSize);
+		this.totalPages = (int) Math.ceil((double)totalItem/pageSize);
 		this.startPage = 1;
 		this.endPage = 7;
 		if(this.totalPages < 7) this.endPage = this.totalPages;

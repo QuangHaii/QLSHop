@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.PaginatedList;
 import model.Product;
 
 import java.io.IOException;
@@ -38,7 +39,19 @@ public class ProductServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String uri = request.getRequestURI();
 		if (uri.contains("/Product/Index")) {
-			List<Product> listProducts = dao.findAll();
+			int pageIndex = 1;
+			if (request.getParameter("pageIndex") != null) {
+				pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
+			}
+			int pageSize = 10;
+			int totalItem = dao.findAll().size();
+			PaginatedList page = new PaginatedList(pageIndex, pageSize, totalItem);
+			System.out.println(page.getTotalPages());
+			request.setAttribute("pageIndex", pageIndex);
+			request.setAttribute("startPage", page.getStartPage());
+			request.setAttribute("endPage", page.getEndPage());
+			request.setAttribute("totalPages", page.getTotalPages());
+			List<Product> listProducts = dao.getPageProducts(pageSize*(pageIndex -1),pageSize,null,null,null);
 			request.setAttribute("listProducts", listProducts);
 			request.getRequestDispatcher("/Product/Index.jsp").forward(request, response);
 		

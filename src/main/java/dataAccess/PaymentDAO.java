@@ -117,4 +117,28 @@ public class PaymentDAO {
 		paymentList.add("Visa");
 		return paymentList;
 	}
+	
+	public List<Payment> getPagePayments(int first,int pageSize){
+		EntityManager em = JpaUtils.getEntityManager();
+		EntityTransaction transaction = em.getTransaction();
+		List<Payment> list = null;
+		try {
+			transaction.begin();
+			// Câu lệnh truy vấn JPQL
+			String jpql = "SELECT x FROM Payment x";
+			// Tạo đối tượng truy vấn
+			TypedQuery<Payment> query = em.createQuery(jpql, Payment.class);
+			// Truy vấn
+			list = query.setFirstResult(first)
+					.setMaxResults(pageSize)
+					.getResultList();
+			transaction.commit();
+			// Hiển thị kết quả truy vấn
+		} catch (Exception e) {
+			transaction.rollback();
+		} finally {
+			em.close();
+		}
+		return list;
+	}
 }

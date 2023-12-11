@@ -196,4 +196,28 @@ public class OrderDAO {
 		
 		return percent;
 	}
+	
+	public List<Order> getPageOrders(int first,int pageSize) {
+		EntityManager em = JpaUtils.getEntityManager();
+		EntityTransaction transaction = em.getTransaction();
+		List<Order> list = null;
+		try {
+			transaction.begin();
+			// Câu lệnh truy vấn JPQL
+			String jpql = "SELECT x FROM Order x";
+			// Tạo đối tượng truy vấn
+			TypedQuery<Order> query = em.createQuery(jpql, Order.class);
+			// Truy vấn
+			list = query.setFirstResult(first)
+					.setMaxResults(pageSize)
+					.getResultList();
+			transaction.commit();
+			// Hiển thị kết quả truy vấn
+		} catch (Exception e) {
+			transaction.rollback();
+		} finally {
+			em.close();
+		}
+		return list;
+	}
 }

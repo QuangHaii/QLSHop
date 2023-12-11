@@ -11,8 +11,6 @@ import model.*;
 import utils.CartUtils;
 import java.io.IOException;
 import java.sql.Date;
-import java.util.List;
-import java.util.Random;
 
 import dataAccess.*;
 
@@ -27,7 +25,6 @@ public class PaymentServlet extends HttpServlet {
 	private OrderDAO orderDAO = new OrderDAO();
 	private OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
 	private UserDAO userDAO = new UserDAO();
-	private ProductDAO pdao = new ProductDAO();
 	private HttpSession session;
 
 	/**
@@ -47,58 +44,18 @@ public class PaymentServlet extends HttpServlet {
 		String uri = request.getRequestURI();
 		
 		if (uri.contains("/Payment/Index")) {
-			/*Random r = new Random();
-			List<User> userList = userDAO.findAll();
-			List<Product> pList = pdao.findAll();
-			List<String> method = paymentDAO.getPaymentList();
-			for(int i = 0;i<10;i++) {
-				int num = r.nextInt(method.size());
-				String temp = method.get(num);
-				num = r.nextInt(userList.size());
-				User user = userList.get(num);
-				Payment payment = new Payment();
-				payment.setMethod(temp);
-				num = r.nextInt((999999-100000)+1)+1000000;
-				payment.setCardNumber(num);
-				payment.setNameOnCard(user.getFullname());
-				num = r.nextInt((9999-1000)+1)+1000;
-				payment.setCvv(num);
-				num = r.nextInt((12-1)+1)+1;
-				payment.setExpirationMonth(num);
-				num = r.nextInt((2023-2000)+1)+2000;
-				payment.setExpirationYear(num);
-				payment.setUserID(user.getUserID());
-				paymentDAO.insert(payment);
-				//Add Order
-				Order order = new Order();
-				order.setFullName(user.getFullname());
-				order.setEmail(user.getEmail());
-				order.setAddress(user.getAddress());
-				num = r.nextInt((999999-100000)+1)+1000000;
-				order.setPhone(Integer.toString(num));
-				order.setTotalPrice(0);
-				order.setOrderDate(new Date(System.currentTimeMillis()));
-				order.setPayment(payment);
-				orderDAO.insert(order);
-				//Add Order Detail
-				double price = 0;
-				for(int j = 0;j<5;j++) {
-					num = r.nextInt(pList.size());
-					Product product = pList.get(num);
-					OrderDetail orderDetail = new OrderDetail();
-					orderDetail.setOrder(order);
-					orderDetail.setProduct(product);
-					num = r.nextInt((10-1)+1)+1;
-					orderDetail.setQuantity(num);
-					price = product.getPrice()*num;
-					orderDetailDAO.insert(orderDetail);
-				}
-				order.setTotalPrice(price);
-				orderDAO.update(order);
-
-			}*/
-			
-			request.setAttribute("listPayments", paymentDAO.findAll());
+			int pageIndex = 1;
+			if (request.getParameter("pageIndex") != null) {
+				pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
+			}
+			int pageSize = 10;
+			int totalItem = paymentDAO.findAll().size();
+			PaginatedList page = new PaginatedList(pageIndex, pageSize, totalItem);
+			request.setAttribute("pageIndex", pageIndex);
+			request.setAttribute("startPage", page.getStartPage());
+			request.setAttribute("endPage", page.getEndPage());
+			request.setAttribute("totalPages", page.getTotalPages());
+			request.setAttribute("listPayments", paymentDAO.getPagePayments(pageSize * (pageIndex - 1), pageSize));
 			request.getRequestDispatcher("/Payment/Index.jsp").forward(request, response);
 		
 		} else if (uri.contains("/Payment/Create")) {

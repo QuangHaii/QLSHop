@@ -28,7 +28,7 @@
 								<tr>
 
 									<th>Order id</th>
-									<th>Payment id</th>
+									<th>Order id</th>
 									<th>Full name</th>
 									<th>Phone number</th>
 									<th>Email</th>
@@ -54,6 +54,41 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		<div class="text-end">
+			<div class="container">
+				<ul class="pagination justify-content-center">
+					<c:if test="${pageIndex > 1}">
+						<li class="page-item"><a
+							href="/QLShop/Order/Index?pageIndex=1"
+							class="page-link"> First </a></li>
+						<li class="page-item"><a
+							href="/QLShop/Order/Index?pageIndex=${pageIndex - 1}"
+							class="page-link" aria-label="Previous"> <span
+								aria-hidden="true">&laquo;</span> <span class="sr-only">Previous</span>
+						</a></li>
+					</c:if>
+
+					<c:forEach var="page" begin="${startPage }" end="${endPage }">
+						<li class="page-item"><a
+							href="/QLShop/Order/Index?pageIndex=${page}"
+							class="page-link"> ${page } </a></li>
+					</c:forEach>
+
+					<c:if test="${pageIndex < totalPages}">
+						<li class="page-item"><a
+							href="/QLShop/Order/Index?pageIndex=${pageIndex + 1}"
+							class="page-link" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+								<span class="sr-only">Next</span>
+						</a></li>
+						<li class="page-item"><a
+							href="/QLShop/Order/Index?pageIndex=${totalPages}"
+							class="page-link"> Last </a></li>
+					</c:if>
+
+				</ul>
+			</div>
+
 		</div>
 </body>
 </html>

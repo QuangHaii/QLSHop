@@ -162,7 +162,7 @@ public class ProductDAO {
 		return cateList;
 	}
 
-	public List<Product> getPageProducts(int first, String sortString, String searchString, String cateString) {
+	public List<Product> getPageProducts(int first,int pageSize, String sortString, String searchString, String cateString) {
 		String jpql = "SELECT a FROM Product a where a.productName like:search and a.category like:cate ";
 		if (sortString != null) {
 			if (sortString.contains("a_to_z")) {
@@ -186,7 +186,7 @@ public class ProductDAO {
 		TypedQuery<Product> query = em.createQuery(jpql, Product.class);
 		query.setParameter("search", "%" + searchString + "%");
 		query.setParameter("cate", "%" + cateString + "%");
-		List<Product> products = query.setFirstResult(first).setMaxResults(8).getResultList();
+		List<Product> products = query.setFirstResult(first).setMaxResults(pageSize).getResultList();
 		em.close();
 		return products;
 	}

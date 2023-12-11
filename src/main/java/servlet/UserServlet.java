@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Random;
 
 import dataAccess.OrderDAO;
 import dataAccess.ProductDAO;
@@ -76,10 +75,9 @@ public class UserServlet extends HttpServlet {
 			String searchString = (String) session.getAttribute("Search");
 			searchString = request.getParameter("searchString");
 			session.setAttribute("Search", searchString);
-
 			String sortString = request.getParameter("sortOrder");
 			String cateString = request.getParameter("cateSort");
-			List<Product> listItem = pDao.getPageProducts(pageSize * (pageIndex - 1), sortString, searchString, cateString);
+			List<Product> listItem = pDao.getPageProducts(pageSize * (pageIndex - 1),pageSize, sortString, searchString, cateString);
 			request.setAttribute("cateString", cateString);
 			request.setAttribute("sortString", sortString);
 			request.setAttribute("pageIndex", pageIndex);
