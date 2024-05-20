@@ -17,7 +17,7 @@ public class EmailUtils {
 	// Password: leplpvigvjkfsrnk
 	public int sendEmail(String destination) {
 		final String email = "haivietkieu2608@gmail.com";
-		final String password = "leplpvigvjkfsrnk";
+		final String password = "";
 
 		Properties properies = new Properties();
 		properies.put("mail.smtp.host", "smtp.gmail.com");
